@@ -8,40 +8,37 @@ function App() {
   );
 }
 
-const V = 200;
-const E = 0;
-const P = 150;
 const I = [
-  [V],
-  [V],
-  [V],
-  [V]
+  [10],
+  [10],
+  [10],
+  [10]
 ];
 const T = [
-  [V, V, V],
-  [E, V, E]
+  [20, 20, 20],
+  [ 0, 20,  0]
 ];
 const L = [
-  [V, E],
-  [V, E],
-  [V, V]
+  [30,  0],
+  [30,  0],
+  [30, 30]
 ];
 const J = [
-  [E, V],
-  [E, V],
-  [V, V],
+  [ 0, 40],
+  [ 0, 40],
+  [40, 40],
 ];
 const O = [
-  [V, V],
-  [V, V]
+  [50, 50],
+  [50, 50]
 ];
 const Z = [
-  [V, V, E],
-  [E, V, V]
+  [60, 60,  0],
+  [ 0, 60, 60]
 ];
 const S = [
-  [E, V, V],
-  [V, V, E]
+  [ 0, 70, 70],
+  [70, 70,  0]
 ];
 const shapes = [I, J, L, O, S, T, Z];
 let tick = 0;
@@ -76,14 +73,14 @@ class Game extends React.Component {
     let newScore = self.state.score;
     if(self.collides(self, self.x)) {
       for(let i = 0; i < 200; i++) {
-        if(self.map[i] == V) {
-          self.map[i] = P;
+        if(self.map[i] > 0 && self.map[i] % 10 == 0) {
+          self.map[i] -= 1;
         }
       }
 
       for(let i = 0; i < 200; i++) {
-        if(self.map[i] == V) {
-          self.map[i] = E;
+        if(self.map[i] > 0 && self.map[i] % 10 == 0) {
+          self.map[i] = 0;
         }
       }
       
@@ -92,7 +89,7 @@ class Game extends React.Component {
       for(let n = 19; n >= 0; n--) {
         let row = true;
         for(let m = 0; m < 10; m++) {
-          row = row && (self.map[n*10 + m] == P);
+          row = row && ((self.map[n*10 + m] + 1) % 10 == 0);
         }
         if(row) {
           rows.push(n);
@@ -119,15 +116,15 @@ class Game extends React.Component {
 
       let gameover = false;
       for(let q = 0; q < 10; q++) {
-        gameover = gameover || (self.map[q] == P);
+        gameover = gameover || (self.map[q] > 0 && (self.map[q] + 1) % 10 == 0);
       }
       if(gameover) {
         return;
       }
     }
     for(let i = 0; i < 200; i++) {
-      if(self.map[i] == V) {
-        self.map[i] = E;
+      if(self.map[i] % 10 == 0) {
+        self.map[i] = 0;
       }
     }
     for(let y = 0; y < self.currPiece.length; y++) {
@@ -152,7 +149,7 @@ class Game extends React.Component {
     for(let y = 0; y < self.currPiece.length; y++) {
       for(let x = 0; x < self.currPiece[0].length; x++) {
         let i = (y + self.y)*10 + x + newX;
-        if(self.map[i] == P && self.currPiece[y][x] == V) {
+        if((self.map[i] + 1) % 10 == 0 && self.currPiece[y][x] > 0 && self.currPiece[y][x] % 10 == 0) {
           return true;
         }       
       }
@@ -283,11 +280,9 @@ class Grid extends React.Component {
 
 class Cell extends React.Component {
   render() {
-    let styles = {
-      backgroundColor: `rgb(0, ${this.props.i}, 0)`
-    };
+    let className = "grid-cell piece_" + this.props.i;
     return (
-      <div className="grid-cell" style={styles}>&nbsp;</div>
+      <div className={className}>&nbsp;</div>
     );
   }
 }

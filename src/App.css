@@ -10,3 +10,63 @@
   grid-template-rows: auto;
   grid-gap: 1px 1px;
 }
+
+.piece_10 {
+  background-color: rgb(255, 0, 0);
+}
+
+.piece_20 {
+  background-color: rgb(0, 192, 0);
+}
+
+.piece_30 {
+  background-color: rgb(0, 96, 255);
+}
+
+.piece_40 {
+  background-color: rgb(255, 192, 0);
+}
+
+.piece_50 {
+  background-color: rgb(192, 192, 192);
+}
+
+.piece_60 {
+  background-color: rgb(255, 0, 255);
+}
+
+.piece_70 {
+  background-color: rgb(0, 255, 255);
+}
+
+.piece_9 {
+  background-color: rgb(192, 0, 0);
+}
+
+.piece_19 {
+  background-color: rgb(0, 128, 0);
+}
+
+.piece_29 {
+  background-color: rgb(0, 32, 192);
+}
+
+.piece_39 {
+  background-color: rgb(192, 128, 0);
+}
+
+.piece_49 {
+  background-color: rgb(128, 128, 128);
+}
+
+.piece_59 {
+  background-color: rgb(192, 0, 192);
+}
+
+.piece_69 {
+  background-color: rgb(0, 192, 192);
+}
+
+.piece_0 {
+  background-color: black;
+}
