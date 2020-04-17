@@ -3,7 +3,12 @@ import './App.css';
 
 function App() {
   return (
-    <Game/>
+    <center>
+      <audio autoPlay loop>
+        <source src="https://archive.org/download/TetrisThemeMusic/Tetris.mp3" type="audio/mpeg"/>
+      </audio>
+      <Game/>
+    </center>
   );
 }
 
@@ -39,8 +44,14 @@ const S = [
   [ 0, 70, 70],
   [70, 70,  0]
 ];
+const TITLE = [
+  [60, 60,  0, 50, 50,  0, 20,  0,  0, 30, 30,  0, 10,  0, 70, 70],
+  [ 0, 60,  0, 50,  0,  0, 20,  0,  0, 30,  0,  0,  0,  0, 70,  0],
+  [60,  0,  0, 50, 50,  0, 20, 20,  0, 30,  0,  0, 10,  0,  0, 70],
+  [60,  0,  0, 50,  0,  0, 20,  0,  0, 30,  0,  0, 10,  0,  0, 70],
+  [60, 60,  0, 50, 50,  0, 20, 20,  0, 30,  0,  0, 10,  0, 70, 70]
+];
 const shapes = [I, J, L, O, S, T, Z];
-let tick = 0;
 
 class Game extends React.Component {
   constructor(props) {
@@ -57,7 +68,8 @@ class Game extends React.Component {
     this.totalRows = 0;
     this.x = 5 - Math.floor(this.currPiece[0].length / 2);
     this.y = 0;
-    this.timer = setTimeout(() => this.tick(this), 20);
+    this.ticks = 0;
+    this.timer = setTimeout(() => this.tick(this), 10);
     window.addEventListener("keydown", (e) => this.handleKeyDown(this, e));
   }
 
@@ -67,7 +79,7 @@ class Game extends React.Component {
   }
 
   tick(self) {
-    if(++tick % 20 == 0) {
+    if(++self.ticks % 25 == 0) {
       self.y += 1;
     }
     let newScore = self.state.score;
@@ -142,7 +154,7 @@ class Game extends React.Component {
       next: self.nextPiece,
       score: newScore
     });
-    self.timer = setTimeout(() => self.tick(self), 20);
+    self.timer = setTimeout(() => self.tick(self), 10);
   }
 
   collides(self, newX) {
@@ -161,6 +173,7 @@ class Game extends React.Component {
   }
 
   handleKeyDown(self, event) {
+    event.preventDefault();
     switch(event.key) {
       case "Down":
       case "ArrowDown":
@@ -213,53 +226,104 @@ class Game extends React.Component {
     return result;
   }
 
-  render() {
+  renderCell(i) {
     return (
-      <table>
-        <tr>
-          <td>
-            <Grid grid={this.state.grid}/>
-          </td>
-          <td style={{"vertical-align": "top"}}>
-            <p>Score: {this.state.score}</p>
-            Next: <Next next={this.state.next}/>
-          </td>
-        </tr>
-      </table>
-    );
-  }
-}
-
-class Next extends React.Component {
-  renderCell(i, k) {
-    return (
-      <Cell i={i} key={k} />
+      <Cell i={i} />
     );
   }
 
   render() {
     let cells = [];
-    let dx = this.props.next[0].length < 2 ? -2 : -1;
-    let dy = this.props.next.length < 3 ? -2 : -1;
 
-    for(let y = 0; y < 6; y++) {
-      for(let x = 0; x < 5; x++) {
-        cells.push(this.renderCell(((this.props.next.length >= y + dy +1) && (y > -1 - dy) && (this.props.next[0].length >= x + dx + 1) && (x > -1 - dx)) ? this.props.next[y + dy][x + dx] : 0, 'next' + y * 3 + x));
+    for(let y = 0; y < TITLE.length; y++) {
+      for(let x = 0; x < TITLE[0].length; x++) {
+        cells.push(this.renderCell(TITLE[y][x], 'next' + y * 3 + x));
       }
     }
+    
+    let styles = {
+      "grid-template-columns": Array(TITLE[0].length).fill("20px").join(" "),
+      "grid-template-rows": Array(TITLE.length).fill("20px").join(" ")
+    };
 
     return (
-      <div className="next-container">       
-        {cells}
+      <div>
+        <div className={"gameover is-" + this.state.gameover}>
+          <div className="gameover-popup">
+            <div className="gameover-text">
+              <h1>GAME OVER</h1>
+              <p>score: {this.state.score}</p>
+            </div>
+          </div>
+        </div>
+        <table cellPadding="10px">
+          <tr>
+            <td colSpan="2">
+              <div className="zetris">
+                <div className="next-piece" style={styles}>       
+                  {cells}
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <Grid grid={this.state.grid}/>
+            </td>
+            <td style={{"vertical-align": "top"}}>
+              <p>SCORE: <div className="score">{this.state.score}</div></p>
+              NEXT: <Next next={this.state.next}/>
+            </td>
+          </tr>
+        </table>
+      </div>
+    );
+  }
+}
+
+class Next extends React.Component {
+  renderCell(i) {
+    return (
+      <Cell i={i} />
+    );
+  }
+
+  render() {
+    let cells = [];
+
+    for(let y = 0; y < this.props.next.length; y++) {
+      for(let x = 0; x < this.props.next[0].length; x++) {
+        cells.push(this.renderCell(this.props.next[y][x], 'next' + y * 3 + x));
+      }
+    }
+    
+    let styles = {
+      "grid-template-columns": Array(this.props.next[0].length).fill("20px").join(" "),
+      "grid-template-rows": Array(this.props.next.length).fill("20px").join(" ")
+    };
+
+    return (
+      <div class="next-container">
+        <div>&nbsp;</div>
+        <div>&nbsp;</div>
+        <div>&nbsp;</div>
+        <div>&nbsp;</div>
+        <div className="next-piece" style={styles}>       
+          {cells}
+        </div>
+        <div>&nbsp;</div>
+        <div>&nbsp;</div>
+        <div>&nbsp;</div>
+        <div>&nbsp;</div>
       </div>
     );
   }
 }
 
 class Grid extends React.Component {
-  renderCell(i, k) {
+  renderCell(i) {
     return (
-      <Cell i={i} key={k} />
+      <Cell i={i} />
     );
   }
 
