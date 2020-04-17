@@ -279,7 +279,7 @@ class Grid extends React.Component {
 
 class Cell extends React.Component {
   render() {
-    let className = "grid-cell piece_" + this.props.i;
+    let className = "grid-cell piece-" + this.props.i;
     return (
       <div className={className}>&nbsp;</div>
     );
