@@ -52,7 +52,8 @@ class Game extends React.Component {
     this.state = { 
       grid: this.map,
       next: this.nextPiece,
-      score: 0
+      score: 0,
+      gameover: false
     };
     this.totalRows = 0;
     this.x = 5 - Math.floor(this.currPiece[0].length / 2);
@@ -119,6 +120,9 @@ class Game extends React.Component {
         gameover = gameover || (self.map[q] > 0 && (self.map[q] + 1) % 10 == 0);
       }
       if(gameover) {
+        self.setState({
+          gameover: gameover
+        });
         return;
       }
     }
@@ -244,13 +248,9 @@ class Next extends React.Component {
         cells.push(this.renderCell(((this.props.next.length >= y + dy +1) && (y > -1 - dy) && (this.props.next[0].length >= x + dx + 1) && (x > -1 - dx)) ? this.props.next[y + dy][x + dx] : 0, 'next' + y * 3 + x));
       }
     }
-
-    let styles = {
-      "grid-template-columns": Array(5).fill("20px").join(" ")
-    }
-
+т
     return (
-      <div className="next-container" style={styles}>       
+      <div className="next-container">       
         {cells}
       </div>
     );
