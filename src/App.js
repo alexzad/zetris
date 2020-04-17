@@ -247,7 +247,7 @@ class Next extends React.Component {
         cells.push(this.renderCell(((this.props.next.length >= y + dy +1) && (y > -1 - dy) && (this.props.next[0].length >= x + dx + 1) && (x > -1 - dx)) ? this.props.next[y + dy][x + dx] : 0, 'next' + y * 3 + x));
       }
     }
-т
+
     return (
       <div className="next-container">       
         {cells}
